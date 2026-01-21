@@ -2,10 +2,17 @@
 
 A go library to interact with [The Bastion](https://github.com/ovh/the-bastion/).
 
+## Installation
+
+```bash
+go get github.com/adfinis/bastion-go
+```
 
 ## Example
 
 ```go
+
+
 cfg := bastion.Config{
     Host:                  "bastion.mycompany.org",
     Port:                  22,

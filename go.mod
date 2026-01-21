@@ -1,4 +1,4 @@
-module github.com/adfinis/bastion
+module github.com/adfinis/bastion-go
 
 go 1.25.6
 
