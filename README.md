@@ -1,4 +1,7 @@
 # Bastion-go
+[![Tests](https://github.com/adfinis/bastion-go/actions/workflows/test.yml/badge.svg)](https://github.com/adfinis/bastion-go/actions/workflows/test.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/adfinis/bastion-go)](https://goreportcard.com/report/github.com/adfinis/bastion-go)
+[![Go Reference](https://pkg.go.dev/badge/github.com/adfinis/bastion-go.svg)](https://pkg.go.dev/github.com/adfinis/bastion-go)
 
 A go library to interact with [The Bastion](https://github.com/ovh/the-bastion/).
 
@@ -11,8 +14,6 @@ go get github.com/adfinis/bastion-go
 ## Example
 
 ```go
-
-
 cfg := bastion.Config{
     Host:                  "bastion.mycompany.org",
     Port:                  22,
