@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 docker compose exec -T bastion \
     /opt/bastion/bin/admin/setup-first-admin-account.sh \
     bastionadmin \
-    auto < test/testdata/ssh-keys/id_ed25519.pub
+    auto < testdata/id_ed25519.pub
 
 # enable ipv6 support
 docker compose exec -T bastion \
