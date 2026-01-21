@@ -50,3 +50,23 @@ func (c *Client) AccountListAccesses(account string) ([]*AccountAccess, error) {
 
 	return accesses, nil
 }
+
+// SelfListAccesses lists all the accesses for the authenticated account.
+func (c *Client) SelfListAccesses() ([]*AccountAccess, error) {
+	response, err := c.executeCommand("selfListAccesses")
+	if err != nil {
+		return nil, err
+	}
+
+	valueBytes, err := json.Marshal(response.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	var accesses []*AccountAccess
+	if err := json.Unmarshal(valueBytes, &accesses); err != nil {
+		return nil, err
+	}
+
+	return accesses, nil
+}
