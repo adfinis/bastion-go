@@ -1,0 +1,35 @@
+---
+name: Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - "README.md"
+  push:
+    paths-ignore:
+      - "README.md"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+      - uses: docker/setup-docker-action@v4
+      - uses: docker/setup-compose-action@v1
+      - uses: actions/setup-go@v6.1.0
+        with:
+          go-version-file: "go.mod"
+          cache: true
+
+      - name: Start test infrastructure
+        run: make test-up
+
+      - name: Run tests
+        run: make test
+
+      - name: Stop test infrastructure
+        if: always()
+        run: make test-down

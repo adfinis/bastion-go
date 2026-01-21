@@ -1,0 +1,6 @@
+---
+services:
+  bastion:
+    image: ghcr.io/adfinis-forks/the-bastion:sandbox
+    ports:
+      - "2222:22"
