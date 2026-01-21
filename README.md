@@ -14,23 +14,34 @@ go get github.com/adfinis/bastion-go
 ## Example
 
 ```go
-cfg := bastion.Config{
-    Host:                  "bastion.mycompany.org",
-    Port:                  22,
-    Username:              "clarkkent",
-}
+package main
 
-client, err := bastion.New(&cfg, bastion.WithPrivateKeyFileAuthWithPassphrase(
-    "/path/to/private/key",
-    os.Getenv("BASTION_PRIVATE_KEY_PASSPHRASE"),
-))
-if err != nil {
-    panic(err)
-}
+import (
+	"log"
+	"os"
 
-groupServers, err := client.GroupListServers("mygroup1")
-if err != nil {
-    panic(err)
+	"github.com/adfinis/bastion-go"
+)
+
+func main() {
+    cfg := bastion.Config{
+		Host:                  "bastion.mycompany.org",
+		Port:                  22,
+		Username:              "clarkkent",
+	}
+
+    client, err := bastion.New(&cfg, bastion.WithPrivateKeyFileAuthWithPassphrase(
+		"/path/to/private/key",
+		os.Getenv("BASTION_PRIVATE_KEY_PASSPHRASE"),
+	))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	groupServers, err := client.GroupListServers("mygroup1")
+	if err != nil {
+  		log.Fatalln(err)
+	}
+	_ = groupServers
 }
-_ = groupServers
 ```
