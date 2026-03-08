@@ -239,9 +239,22 @@ func completeHosts(_ *cobra.Command, args []string, _ string) ([]string, cobra.S
 				continue
 			}
 			seen[acl.IP] = struct{}{}
-			entry := acl.IP
+
+			value := acl.IP
+			if acl.ProxyIP != nil && *acl.ProxyIP != "" {
+				jump := *acl.ProxyIP
+				if acl.ProxyUser != nil && *acl.ProxyUser != "" {
+					jump = *acl.ProxyUser + "@" + jump
+				}
+				if acl.ProxyPort != nil && acl.ProxyPort.ValueInt() > 0 {
+					jump = fmt.Sprintf("%s:%d", jump, acl.ProxyPort.ValueInt())
+				}
+				value = fmt.Sprintf("%s -J %s", jump, acl.IP)
+			}
+
+			entry := value
 			if acl.UserComment != nil && *acl.UserComment != "" {
-				entry = fmt.Sprintf("%s\t%s", acl.IP, *acl.UserComment)
+				entry = fmt.Sprintf("%s\t%s", value, *acl.UserComment)
 			}
 			hosts = append(hosts, entry)
 		}
