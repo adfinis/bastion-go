@@ -32,7 +32,7 @@ var rootCmdFlags struct {
 
 var rootCmd = &cobra.Command{
 	Use:                "bssh [flags] [host] [-- extra-ssh-args...]",
-	Short:              "Helper for The Bastion with non-interactive OTP login",
+	Short:              "SSH for The Bastion with fancy autocompletion and OTP callback support",
 	Args:               cobra.ArbitraryArgs,
 	FParseErrWhitelist: cobra.FParseErrWhitelist{UnknownFlags: true},
 	ValidArgsFunction:  completeHosts,
