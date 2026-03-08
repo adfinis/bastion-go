@@ -15,6 +15,7 @@ import (
 	bastion "github.com/adfinis/bastion-go"
 	"github.com/adfinis/bastion-go/cmd/bssh/config"
 	"github.com/adfinis/bastion-go/cmd/bssh/otp"
+	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/log"
 	"github.com/creack/pty"
 	"github.com/spf13/cobra"
@@ -66,12 +67,9 @@ func init() {
 }
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	if err := rootCmd.ExecuteContext(ctx); err != nil {
+	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		os.Exit(1)
 	}
-	os.Exit(exitCode)
 }
 
 func extractUnknownArgs(flags *pflag.FlagSet, args []string) []string {
