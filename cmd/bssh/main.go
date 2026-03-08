@@ -235,14 +235,15 @@ func completeHosts(_ *cobra.Command, args []string, _ string) ([]string, cobra.S
 	var hosts []string
 	for _, access := range accesses {
 		for _, acl := range access.ACL {
-			host := acl.IP
+			if _, ok := seen[acl.IP]; ok {
+				continue
+			}
+			seen[acl.IP] = struct{}{}
+			entry := acl.IP
 			if acl.UserComment != nil && *acl.UserComment != "" {
-				host = *acl.UserComment
+				entry = fmt.Sprintf("%s\t%s", acl.IP, *acl.UserComment)
 			}
-			if _, ok := seen[host]; !ok {
-				seen[host] = struct{}{}
-				hosts = append(hosts, host)
-			}
+			hosts = append(hosts, entry)
 		}
 	}
 
