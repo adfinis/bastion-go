@@ -96,3 +96,14 @@ func getPrivateKeyFileAuthWithPassphrase(keyPath string, passphrase string) (ssh
 	}
 	return getPrivateKeyAuthWithPassphrase(string(key), passphrase)
 }
+
+// KeyboardInteractiveChallenge is a callback for answering SSH keyboard-interactive challenges.
+// It receives the challenge name, instruction, questions, and echo flags, and returns answers.
+type KeyboardInteractiveChallenge func(name, instruction string, questions []string, echos []bool) ([]string, error)
+
+// WithKeyboardInteractiveAuth returns a keyboard-interactive authentication method using the provided challenge callback.
+func WithKeyboardInteractiveAuth(challenge KeyboardInteractiveChallenge) SSHAuthMethod {
+	return func() (ssh.AuthMethod, error) {
+		return ssh.KeyboardInteractive(ssh.KeyboardInteractiveChallenge(challenge)), nil
+	}
+}
