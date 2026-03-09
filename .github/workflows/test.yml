@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.1
-      - uses: docker/setup-docker-action@v4
-      - uses: docker/setup-compose-action@v1
+      - uses: docker/setup-docker-action@v5
+      - uses: docker/setup-compose-action@v2
       - uses: actions/setup-go@v6.3.0
         with:
           go-version-file: "go.mod"
