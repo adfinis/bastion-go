@@ -98,14 +98,14 @@ func getPrivateKeyFileAuthWithPassphrase(keyPath string, passphrase string) (ssh
 	return getPrivateKeyAuthWithPassphrase(string(key), passphrase)
 }
 
-// WithPrivateKeyWithSignedCert returns a private key authentication method with a signed certificate.
-func WithPrivateKeyWithSignedCert(privateKey string, certPath string) SSHAuthMethod {
+// WithPrivateKeyAuthWithSignedCert returns a private key authentication method with a signed certificate.
+func WithPrivateKeyAuthWithSignedCert(privateKey string, certPath string) SSHAuthMethod {
 	return func() (ssh.AuthMethod, error) {
-		return getPrivateKeyWithSignedCert(privateKey, certPath)
+		return getPrivateKeyAuthWithSignedCert(privateKey, certPath)
 	}
 }
 
-func getPrivateKeyWithSignedCert(privateKey string, certPath string) (ssh.AuthMethod, error) {
+func getPrivateKeyAuthWithSignedCert(privateKey string, certPath string) (ssh.AuthMethod, error) {
 	signer, err := ssh.ParsePrivateKey([]byte(privateKey))
 	if err != nil {
 		return nil, err
@@ -113,14 +113,14 @@ func getPrivateKeyWithSignedCert(privateKey string, certPath string) (ssh.AuthMe
 	return getSignedCertAuth(signer, certPath)
 }
 
-// WithPrivateKeyWithPassphraseWithSignedCert returns a private key authentication method with passphrase support and a signed certificate.
-func WithPrivateKeyWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) SSHAuthMethod {
+// WithPrivateKeyAuthWithPassphraseWithSignedCert returns a private key authentication method with passphrase support and a signed certificate.
+func WithPrivateKeyAuthWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) SSHAuthMethod {
 	return func() (ssh.AuthMethod, error) {
-		return getPrivateKeyWithPassphraseWithSignedCert(privateKey, passphrase, certPath)
+		return getPrivateKeyAuthWithPassphraseWithSignedCert(privateKey, passphrase, certPath)
 	}
 }
 
-func getPrivateKeyWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) (ssh.AuthMethod, error) {
+func getPrivateKeyAuthWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) (ssh.AuthMethod, error) {
 	var signer ssh.Signer
 	var err error
 
@@ -147,7 +147,7 @@ func getPrivateKeyFileAuthWithPassphraseWithSignedCert(keyPath string, passphras
 	if err != nil {
 		return nil, err
 	}
-	return getPrivateKeyWithPassphraseWithSignedCert(string(key), passphrase, certPath)
+	return getPrivateKeyAuthWithPassphraseWithSignedCert(string(key), passphrase, certPath)
 }
 
 func getSignedCertAuth(signer ssh.Signer, certPath string) (ssh.AuthMethod, error) {
