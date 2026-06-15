@@ -4,6 +4,7 @@
 package bastion
 
 import (
+	"errors"
 	"net"
 	"os"
 
@@ -95,6 +96,78 @@ func getPrivateKeyFileAuthWithPassphrase(keyPath string, passphrase string) (ssh
 		return nil, err
 	}
 	return getPrivateKeyAuthWithPassphrase(string(key), passphrase)
+}
+
+// WithPrivateKeyWithSignedCert returns a private key authentication method with a signed certificate.
+func WithPrivateKeyWithSignedCert(privateKey string, certPath string) SSHAuthMethod {
+	return func() (ssh.AuthMethod, error) {
+		return getPrivateKeyWithSignedCert(privateKey, certPath)
+	}
+}
+
+func getPrivateKeyWithSignedCert(privateKey string, certPath string) (ssh.AuthMethod, error) {
+	signer, err := ssh.ParsePrivateKey([]byte(privateKey))
+	if err != nil {
+		return nil, err
+	}
+	return getSignedCertAuth(signer, certPath)
+}
+
+// WithPrivateKeyWithPassphraseWithSignedCert returns a private key authentication method with passphrase support and a signed certificate.
+func WithPrivateKeyWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) SSHAuthMethod {
+	return func() (ssh.AuthMethod, error) {
+		return getPrivateKeyWithPassphraseWithSignedCert(privateKey, passphrase, certPath)
+	}
+}
+
+func getPrivateKeyWithPassphraseWithSignedCert(privateKey string, passphrase string, certPath string) (ssh.AuthMethod, error) {
+	var signer ssh.Signer
+	var err error
+
+	if passphrase != "" {
+		signer, err = ssh.ParsePrivateKeyWithPassphrase([]byte(privateKey), []byte(passphrase))
+	} else {
+		signer, err = ssh.ParsePrivateKey([]byte(privateKey))
+	}
+	if err != nil {
+		return nil, err
+	}
+	return getSignedCertAuth(signer, certPath)
+}
+
+// WithPrivateKeyFileAuthWithPassphraseWithSignedCert returns a private key file authentication method with passphrase support and a signed certificate.
+func WithPrivateKeyFileAuthWithPassphraseWithSignedCert(keyPath string, passphrase string, certPath string) SSHAuthMethod {
+	return func() (ssh.AuthMethod, error) {
+		return getPrivateKeyFileAuthWithPassphraseWithSignedCert(keyPath, passphrase, certPath)
+	}
+}
+
+func getPrivateKeyFileAuthWithPassphraseWithSignedCert(keyPath string, passphrase string, certPath string) (ssh.AuthMethod, error) {
+	key, err := os.ReadFile(keyPath)
+	if err != nil {
+		return nil, err
+	}
+	return getPrivateKeyWithPassphraseWithSignedCert(string(key), passphrase, certPath)
+}
+
+func getSignedCertAuth(signer ssh.Signer, certPath string) (ssh.AuthMethod, error) {
+	certBytes, err := os.ReadFile(certPath)
+	if err != nil {
+		return nil, err
+	}
+	pubKey, _, _, _, err := ssh.ParseAuthorizedKey(certBytes)
+	if err != nil {
+		return nil, err
+	}
+	cert, ok := pubKey.(*ssh.Certificate)
+	if !ok {
+		return nil, errors.New("not a valid SSH certificate")
+	}
+	certSigner, err := ssh.NewCertSigner(cert, signer)
+	if err != nil {
+		return nil, err
+	}
+	return ssh.PublicKeys(certSigner), nil
 }
 
 // KeyboardInteractiveChallenge is a callback for answering SSH keyboard-interactive challenges.
