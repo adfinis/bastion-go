@@ -4,7 +4,7 @@ go 1.25.6
 
 require (
 	github.com/adrg/xdg v0.5.3
-	github.com/skeema/knownhosts v1.3.2
+	github.com/skeema/knownhosts v1.3.3
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/crypto v0.55.0
 )
